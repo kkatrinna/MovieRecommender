@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}{{ genre }} - Фильмы жанра {{ genre }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-5">
+                <i class="fas fa-tag"></i> Жанр: {{ genre }}
+            </h1>
+            <p class="text-muted">Найдено фильмов: {{ movies|length }}</p>
+        </div>
+    </div>
+
+    {% if movies %}
+    <div class="row movies-grid">
+        {% for movie in movies %}
+        <div class="col-md-3 col-6 mb-4">
+            <div class="card movie-card h-100" onclick="location.href='/movie/{{ movie.id }}'">
+                {% if movie.poster_path and movie.poster_path.startswith('http') %}
+                    <img src="{{ movie.poster_path }}" class="card-img-top movie-poster" alt="{{ movie.title }}">
+                {% else %}
+                    <div class="movie-poster-placeholder">
+                        <img src="https://via.placeholder.com/300x450/2c3e50/ffffff?text={{ movie.title|urlencode }}" 
+                             class="card-img-top movie-poster" alt="{{ movie.title }}">
+                    </div>
+                {% endif %}
+                <div class="card-body">
+                    <h6 class="card-title text-truncate">{{ movie.title }}</h6>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">{{ movie.year }}</small>
+                        <span class="rating">
+                            <i class="fas fa-star text-warning"></i> {{ movie.vote_average }}
+                        </span>
+                    </div>
+                    {% if movie.director %}
+                    <small class="text-muted d-block mt-1">{{ movie.director }}</small>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i> В этом жанре пока нет фильмов.
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.movie-poster-placeholder {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 3rem;
+}
+.movie-poster {
+    height: 300px;
+    object-fit: cover;
+}
+</style>
+{% endblock %}

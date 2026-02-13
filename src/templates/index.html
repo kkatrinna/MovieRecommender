@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Главная - MovieRecommender{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="container text-center">
+        <h1 class="display-4 mb-4">Найди свой идеальный фильм</h1>
+        <p class="lead mb-5">Персональные рекомендации на основе искусственного интеллекта</p>
+        <form action="/search" method="get" class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control form-control-lg" 
+                           placeholder="Введите название фильма..." required>
+                    <button class="btn btn-light btn-lg" type="submit">
+                        <i class="fas fa-search"></i> Найти
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="container">
+    <section class="mb-5">
+        <h2 class="section-title">
+            <i class="fas fa-fire text-danger"></i> Популярные фильмы
+        </h2>
+        <div class="row">
+            {% for movie in popular %}
+            <div class="col-md-3 col-6 mb-4">
+                <div class="card movie-card" onclick="location.href='/movie/{{ movie.id }}'">
+                    <img src="https://via.placeholder.com/300x450/343a40/ffffff?text={{ movie.title|urlencode }}" 
+                         class="card-img-top movie-poster" alt="{{ movie.title }}">
+                    <div class="card-body">
+                        <h6 class="card-title text-truncate">{{ movie.title }}</h6>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">{{ movie.year }}</small>
+                            <span class="rating">
+                                <i class="fas fa-star"></i> {{ movie.vote_average }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="mb-5">
+        <h2 class="section-title">
+            <i class="fas fa-star text-warning"></i> С высоким рейтингом
+        </h2>
+        <div class="row">
+            {% for movie in top_rated %}
+            <div class="col-md-3 col-6 mb-4">
+                <div class="card movie-card" onclick="location.href='/movie/{{ movie.id }}'">
+                    <img src="https://via.placeholder.com/300x450/343a40/ffffff?text={{ movie.title|urlencode }}" 
+                         class="card-img-top movie-poster" alt="{{ movie.title }}">
+                    <div class="card-body">
+                        <h6 class="card-title text-truncate">{{ movie.title }}</h6>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">{{ movie.year }}</small>
+                            <span class="rating">
+                                <i class="fas fa-star"></i> {{ movie.vote_average }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="mb-5">
+        <h2 class="section-title">
+            <i class="fas fa-calendar-alt text-info"></i> Новинки
+        </h2>
+        <div class="row">
+            {% for movie in recent %}
+            <div class="col-md-3 col-6 mb-4">
+                <div class="card movie-card" onclick="location.href='/movie/{{ movie.id }}'">
+                    <img src="https://via.placeholder.com/300x450/343a40/ffffff?text={{ movie.title|urlencode }}" 
+                         class="card-img-top movie-poster" alt="{{ movie.title }}">
+                    <div class="card-body">
+                        <h6 class="card-title text-truncate">{{ movie.title }}</h6>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">{{ movie.year }}</small>
+                            <span class="rating">
+                                <i class="fas fa-star"></i> {{ movie.vote_average }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+
+<script>
+$(document).ready(function() {
+    $.get('/api/recommendations/popular', function(data) {
+        console.log('🎬 Популярные рекомендации загружены');
+    });
+});
+</script>
+{% endblock %}

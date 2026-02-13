@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}Рекомендации - MovieRecommender{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Рекомендации для вас</h1>
+
+    <section class="mb-5">
+        <h2 class="section-title">
+            <i class="fas fa-fire text-danger"></i> Популярное
+        </h2>
+        <div class="row">
+            {% for movie in popular %}
+            <div class="col-md-3 col-6 mb-4">
+                <div class="card movie-card" onclick="location.href='/movie/{{ movie.id }}'">
+                    <img src="https://via.placeholder.com/300x450/343a40/ffffff?text={{ movie.title|urlencode }}" 
+                         class="card-img-top movie-poster" alt="{{ movie.title }}">
+                    <div class="card-body">
+                        <h6 class="card-title text-truncate">{{ movie.title }}</h6>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">{{ movie.year }}</small>
+                            <span class="rating">
+                                <i class="fas fa-star"></i> {{ movie.vote_average }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="mb-5">
+        <h2 class="section-title">
+            <i class="fas fa-heart text-danger"></i> Лучшие драмы
+        </h2>
+        <div class="row">
+            {% for movie in drama %}
+            <div class="col-md-3 col-6 mb-4">
+                <div class="card movie-card" onclick="location.href='/movie/{{ movie.id }}'">
+                    <img src="https://via.placeholder.com/300x450/343a40/ffffff?text={{ movie.title|urlencode }}" 
+                         class="card-img-top movie-poster" alt="{{ movie.title }}">
+                    <div class="card-body">
+                        <h6 class="card-title text-truncate">{{ movie.title }}</h6>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">{{ movie.year }}</small>
+                            <span class="rating">
+                                <i class="fas fa-star"></i> {{ movie.vote_average }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="mb-5">
+        <h2 class="section-title">
+            <i class="fas fa-fist-raised text-warning"></i> Лучшие боевики
+        </h2>
+        <div class="row">
+            {% for movie in action %}
+            <div class="col-md-3 col-6 mb-4">
+                <div class="card movie-card" onclick="location.href='/movie/{{ movie.id }}'">
+                    <img src="https://via.placeholder.com/300x450/343a40/ffffff?text={{ movie.title|urlencode }}" 
+                         class="card-img-top movie-poster" alt="{{ movie.title }}">
+                    <div class="card-body">
+                        <h6 class="card-title text-truncate">{{ movie.title }}</h6>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">{{ movie.year }}</small>
+                            <span class="rating">
+                                <i class="fas fa-star"></i> {{ movie.vote_average }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="mb-5">
+        <h2 class="section-title">
+            <i class="fas fa-robot text-primary"></i> Персонализированные
+        </h2>
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i> Оцените несколько фильмов, чтобы получить персонализированные рекомендации!
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Как это работает?</h5>
+                        <p class="card-text">Наш AI анализирует ваши оценки и находит фильмы, которые вам понравятся с вероятностью 95%.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Оцените фильмы</h5>
+                        <p class="card-text">Чем больше оценок, тем точнее рекомендации. Оценивайте от 1 до 10.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Получайте подборки</h5>
+                        <p class="card-text">Каждый день новые рекомендации на основе ваших предпочтений.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

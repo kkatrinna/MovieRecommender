@@ -1,0 +1,263 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {% if query %}
+        Поиск: {{ query }} - MovieRecommender
+    {% else %}
+        Поиск фильмов - MovieRecommender
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-5 mb-4">
+                <i class="fas fa-search"></i> Поиск фильмов
+            </h1>
+
+            <form action="/search" method="get" class="search-form">
+                <div class="input-group input-group-lg">
+                    <input type="text" 
+                           name="q" 
+                           class="form-control" 
+                           placeholder="Введите название фильма, жанр или актера..."
+                           value="{{ query }}"
+                           autofocus>
+                    <button class="btn btn-primary" type="submit">
+                        <i class="fas fa-search"></i> Найти
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if query %}
+    <div class="row mb-3">
+        <div class="col-12">
+            <h2 class="h4">
+                {% if results %}
+                    <i class="fas fa-check-circle text-success"></i> 
+                    Найдено фильмов: {{ results|length }}
+                {% else %}
+                    <i class="fas fa-exclamation-circle text-warning"></i> 
+                    Ничего не найдено
+                {% endif %}
+            </h2>
+        </div>
+    </div>
+
+    {% if results %}
+    <div class="row movies-grid">
+        {% for movie in results %}
+        <div class="col-md-3 col-6 mb-4">
+            <div class="card movie-card h-100" onclick="location.href='/movie/{{ movie.id }}'">
+                <div class="position-relative">
+                    {% if movie.poster_path and movie.poster_path.startswith('http') %}
+                        <img src="{{ movie.poster_path }}" class="card-img-top movie-poster" alt="{{ movie.title }}">
+                    {% else %}
+                        <div class="movie-poster-placeholder">
+                            <span>{{ movie.title[0] }}</span>
+                        </div>
+                    {% endif %}
+
+                    <span class="position-absolute top-0 end-0 badge bg-warning text-dark m-2">
+                        <i class="fas fa-star"></i> {{ movie.vote_average }}
+                    </span>
+
+                    {% if movie.year %}
+                    <span class="position-absolute bottom-0 start-0 badge bg-dark m-2">
+                        {{ movie.year }}
+                    </span>
+                    {% endif %}
+                </div>
+
+                <div class="card-body">
+                    <h6 class="card-title text-truncate">{{ movie.title }}</h6>
+
+                    {% if movie.genres %}
+                    <div class="movie-genres mb-2">
+                        {% for genre in movie.genres[:2] %}
+                        <span class="badge bg-secondary">{{ genre }}</span>
+                        {% endfor %}
+                        {% if movie.genres|length > 2 %}
+                        <span class="badge bg-secondary">+{{ movie.genres|length - 2 }}</span>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    {% if movie.director %}
+                    <small class="text-muted d-block">
+                        <i class="fas fa-user"></i> {{ movie.director }}
+                    </small>
+                    {% endif %}
+
+                    <small class="text-success d-block mt-1">
+                        <i class="fas fa-fire"></i> {{ movie.popularity|int }} популярность
+                    </small>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    {% else %}
+    <div class="row">
+        <div class="col-12">
+            <div class="alert alert-info text-center py-5">
+                <i class="fas fa-film fa-4x mb-3"></i>
+                <h3>По запросу "{{ query }}" ничего не найдено</h3>
+                <p class="mb-0">Попробуйте изменить поисковый запрос</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    {% else %}
+    <div class="row">
+        <div class="col-12">
+            <div class="search-welcome text-center py-5">
+                <i class="fas fa-film fa-5x mb-4 text-primary"></i>
+                <h3>Найдите свой идеальный фильм</h3>
+                <p class="text-muted mb-4">
+                    Введите название фильма, жанр или имя актера в строку поиска выше
+                </p>
+                
+                <!-- Популярные запросы -->
+                <div class="popular-searches">
+                    <h5 class="h6 mb-3">Популярные запросы:</h5>
+                    <div class="d-flex justify-content-center gap-2 flex-wrap">
+                        <a href="/search?q=Драма" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-tag"></i> Драма
+                        </a>
+                        <a href="/search?q=Комедия" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-tag"></i> Комедия
+                        </a>
+                        <a href="/search?q=Боевик" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-tag"></i> Боевик
+                        </a>
+                        <a href="/search?q=Нолан" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-user"></i> Нолан
+                        </a>
+                        <a href="/search?q=Тарантино" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-user"></i> Тарантино
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.movie-poster {
+    height: 300px;
+    object-fit: cover;
+}
+
+.movie-poster-placeholder {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 5rem;
+    font-weight: bold;
+}
+
+.movie-card {
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.movie-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+.search-form {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.search-welcome {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.popular-searches {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.movie-genres {
+    min-height: 24px;
+}
+
+.movie-genres .badge {
+    font-size: 0.7rem;
+    margin-right: 3px;
+}
+
+.loading-spinner {
+    display: none;
+    text-align: center;
+    padding: 40px;
+}
+
+.loading-spinner.show {
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .movie-poster, .movie-poster-placeholder {
+        height: 200px;
+        font-size: 3rem;
+    }
+    
+    .movie-card .card-body {
+        padding: 0.75rem;
+    }
+    
+    .movie-card .card-title {
+        font-size: 0.9rem;
+    }
+}
+</style>
+
+<script>
+document.querySelector('.search-form').addEventListener('submit', function(e) {
+    const btn = this.querySelector('button[type="submit"]');
+    const originalText = btn.innerHTML;
+    
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Поиск...';
+
+    const spinner = document.createElement('div');
+    spinner.className = 'loading-spinner show';
+    spinner.innerHTML = '<div class="spinner-border text-primary"></div>';
+
+    setTimeout(() => {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+    }, 5000);
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const query = new URLSearchParams(window.location.search).get('q');
+    if (query) {
+        console.log('Поисковый запрос:', query);
+    }
+});
+
+if ('loading' in HTMLImageElement.prototype) {
+    const images = document.querySelectorAll('img[loading="lazy"]');
+    images.forEach(img => {
+        img.loading = 'lazy';
+    });
+}
+</script>
+{% endblock %}

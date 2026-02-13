@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}{{ movie.title }} - MovieRecommender{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mt-4">
+        <div class="col-md-3">
+            <img src="https://via.placeholder.com/300x450/343a40/ffffff?text={{ movie.title|urlencode }}" 
+                 class="img-fluid rounded shadow" alt="{{ movie.title }}">
+        </div>
+        <div class="col-md-9">
+            <h1 class="display-4">{{ movie.title }}</h1>
+            <p class="lead">{{ movie.year }} • {{ movie.runtime }} мин</p>
+            
+            <div class="mb-3">
+                {% for genre in movie.genres %}
+                <span class="genre-badge">{{ genre }}</span>
+                {% endfor %}
+            </div>
+            
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card bg-light">
+                        <div class="card-body text-center">
+                            <h3 class="rating mb-0">
+                                <i class="fas fa-star text-warning"></i> {{ movie.vote_average }}
+                            </h3>
+                            <small class="text-muted">{{ movie.vote_count }} оценок</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-light">
+                        <div class="card-body text-center">
+                            <h3 class="mb-0">
+                                <i class="fas fa-fire text-danger"></i> {{ movie.popularity }}
+                            </h3>
+                            <small class="text-muted">популярность</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h4>О фильме</h4>
+            <p>{{ movie.overview }}</p>
+
+            <h4 class="mt-4">Режиссер</h4>
+            <p>{{ movie.director }}</p>
+
+            <h4>В главных ролях</h4>
+            <p>{{ movie.cast|join(', ') }}</p>
+
+            <button class="btn btn-primary btn-lg me-2" onclick="rateMovie({{ movie.id }})">
+                <i class="fas fa-star"></i> Оценить
+            </button>
+            <button class="btn btn-outline-secondary btn-lg" onclick="addToWatchlist({{ movie.id }})">
+                <i class="fas fa-bookmark"></i> В список
+            </button>
+        </div>
+    </div>
+
+    {% if similar %}
+    <section class="mt-5">
+        <h2 class="section-title">Похожие фильмы</h2>
+        <div class="row">
+            {% for movie in similar %}
+            <div class="col-md-3 col-6 mb-4">
+                <div class="card movie-card" onclick="location.href='/movie/{{ movie.id }}'">
+                    <img src="https://via.placeholder.com/300x450/343a40/ffffff?text={{ movie.title|urlencode }}"
+                         class="card-img-top movie-poster" alt="{{ movie.title }}">
+                    <div class="card-body">
+                        <h6 class="card-title text-truncate">{{ movie.title }}</h6>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">{{ movie.year }}</small>
+                            <span class="rating">
+                                <i class="fas fa-star"></i> {{ movie.vote_average }}
+                            </span>
+                        </div>
+                        <small class="text-success">Сходство: {{ movie.similarity }}%</small>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+</div>
+
+<script>
+function rateMovie(movieId) {
+    const rating = prompt('Оцените фильм (от 1 до 10):');
+    if (rating && !isNaN(rating) && rating >= 1 && rating <= 10) {
+        alert('Спасибо за оценку! (Демо-режим)');
+        console.log('Rated movie:', movieId, 'rating:', rating);
+    }
+}
+
+function addToWatchlist(movieId) {
+    alert('Фильм добавлен в список просмотра (Демо-режим)');
+    console.log('Added to watchlist:', movieId);
+}
+</script>
+{% endblock %}
